@@ -1,4 +1,4 @@
-package de.tgremple.siteanalyser.wordpresscrawler
+package de.koalaworks.wcts.wordpresscrawler
 
 import com.mashape.unirest.http.Unirest
 
