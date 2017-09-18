@@ -1,28 +1,20 @@
 package de.koalaworks.wcts.wordpresscrawler
 
-import com.mashape.unirest.http.HttpResponse
-import com.mashape.unirest.http.JsonNode
-import com.mashape.unirest.http.Unirest
+import de.koalaworks.wcts.wordpresscrawler.jobs.Job
+import de.koalaworks.wcts.wordpresscrawler.jobs.JobReader
+import org.slf4j.LoggerFactory
+import java.nio.file.Paths
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-    val result: HttpResponse<JsonNode>
-    if ("1" == args[0]) {
-        result = Unirest
-                .post("http://localhost:44284/analyse")
-                .header("Content-Type", "application/json")
-                .body("""{"url": "http://www.fernuni-hagen.de/KSW/portale/babw/service/"}""")
-                .asJson()
-
-        val message = if (result.status == 201) "Success" else "Error"
-        println("Service: " + message)
-    } else if ("2" == args[0]) {
-        result = Unirest
-                .post("http://localhost:44284/analyse")
-                .header("Content-Type", "application/json")
-                .body("""{"url": "http://www.fernuni-hagen.de/KSW/portale/babw/service/aktuelles/"}""")
-                .asJson()
-
-        val message = if (result.status == 201) "Success" else "Error"
-        println("Aktuelles: " + message)
+    val logger = LoggerFactory.getLogger(Job::class.java)
+    if (args.size != 1) {
+        logger.error("Please provide the path to the job file.")
+        exitProcess(1)
     }
+
+    val jobFile = Paths.get(args[0])
+    val job = JobReader(jobFile).readJob()
+    println(job.sites.size)
+    logger.info("Job parameters: " + job)
 }
