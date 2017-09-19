@@ -19,3 +19,5 @@ sites:
   - http://www.fernuni-hagen.de/KSW/portale/bakwof/
   - http://www.fernuni-hagen.de/KSW/portale/basoz/
   - http://www.fernuni-hagen.de/KSW/portale/masis/
+
+pageSize: 24

@@ -22,7 +22,8 @@ class JobsReaderTest {
             Executable { assertEquals("https", job.classificationService.scheme, "Unexpected scheme") },
             Executable { assertEquals("myhost", job.classificationService.host, "Unexpected host") },
             Executable { assertEquals("55555", job.classificationService.port, "Unexpected port") },
-            Executable { assertEquals("/myservice", job.classificationService.path, "Unexpected path") }
+            Executable { assertEquals("/myservice", job.classificationService.path, "Unexpected path") },
+            Executable { assertEquals(24, job.pageSize, "Unexpected page size") }
         )
 
         assertAll("sites",
@@ -41,7 +42,8 @@ class JobsReaderTest {
             Executable { assertEquals("http", job.classificationService.scheme, "Unexpected scheme") },
             Executable { assertEquals("localhost", job.classificationService.host, "Unexpected host") },
             Executable { assertEquals("44284", job.classificationService.port, "Unexpected port") },
-            Executable { assertEquals("/", job.classificationService.path, "Unexpected path") }
+            Executable { assertEquals("/", job.classificationService.path, "Unexpected path") },
+            Executable { assertEquals(10, job.pageSize, "Unexpected page size") }
         )
 
         assertAll("sites",

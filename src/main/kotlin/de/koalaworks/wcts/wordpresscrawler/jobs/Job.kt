@@ -4,7 +4,8 @@ import java.util.*
 
 data class Job(
         val classificationService: ClassificationService = ClassificationService(),
-        val sites: Array<String> = emptyArray()){
+        val sites: Array<String> = emptyArray(),
+        val pageSize: Int = 10){
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
