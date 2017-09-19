@@ -15,4 +15,8 @@ fun main(args: Array<String>) {
     val jobFile = Paths.get(args[0])
     val job = JobReader(jobFile).readJob()
     logger.debug("Job parameters: {}", job)
+
+    val wordpressRequestExecutor = WordpressRequestExecutor()
+    val wordpressSiteCrawler = WordpressSiteCrawler(job.sites[0], job.pageSize, wordpressRequestExecutor)
+    wordpressSiteCrawler.doIt()
 }

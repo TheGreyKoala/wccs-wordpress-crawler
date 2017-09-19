@@ -43,7 +43,7 @@ class JobsReaderTest {
             Executable { assertEquals("localhost", job.classificationService.host, "Unexpected host") },
             Executable { assertEquals("44284", job.classificationService.port, "Unexpected port") },
             Executable { assertEquals("/", job.classificationService.path, "Unexpected path") },
-            Executable { assertEquals(10, job.pageSize, "Unexpected page size") }
+            Executable { assertEquals(8, job.pageSize, "Unexpected page size") }
         )
 
         assertAll("sites",
