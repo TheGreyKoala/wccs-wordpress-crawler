@@ -26,6 +26,6 @@ data class Job(
     }
 
     override fun toString(): String {
-        return "Job(classificationService=$classificationService, sites=${Arrays.toString(sites)})"
+        return "Job(classificationService=$classificationService, sites=${Arrays.toString(sites)}, pageSize=$pageSize)"
     }
 }
