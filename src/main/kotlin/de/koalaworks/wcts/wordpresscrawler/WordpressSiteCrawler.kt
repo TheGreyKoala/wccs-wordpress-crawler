@@ -15,7 +15,7 @@ class WordpressSiteCrawler(val siteUrl: String, pageSize: Int, val requestExecut
         while (powerOf2 < number) {
             powerOf2 = powerOf2 shl 1
         }
-        return powerOf2 shr 1
+        return if (powerOf2 == number) number else powerOf2 shr 1
     }
 
     fun doIt() {
@@ -23,6 +23,33 @@ class WordpressSiteCrawler(val siteUrl: String, pageSize: Int, val requestExecut
         val totalPages = totalItems / pageSize + (if (totalItems % pageSize != 0) 1 else 0)
         for (i in 2..totalPages) {
             doIt(i, pageSize)
+        }
+    }
+
+    fun getPages() {
+        getPages(1, pageSize)
+        val totalPages = totalItems / pageSize + (if (totalItems % pageSize != 0) 1 else 0)
+        for (i in 2..totalPages) {
+            getPages(i, pageSize)
+        }
+    }
+
+    private fun getPages(page: Int, pageSize: Int) {
+        val result = requestExecutor.downloadPages(page, pageSize)
+        if (result.success) {
+            if (totalItems == -1) {
+                totalItems = result.totalItems
+            }
+            for (item in result.items) {
+                println(item.link)
+            }
+        } else {
+            if (pageSize == 1) {
+                println("Page " + page + " (item " + (page - 1) + ") is evil")
+            } else {
+                getPages(page * 2 - 1, pageSize / 2)
+                getPages(page * 2, pageSize / 2)
+            }
         }
     }
 

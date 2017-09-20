@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test
 
 internal class WordpressSiteCrawlerTest {
 
-    @Test
+    /*@Test
     fun crawler() {
-        val crawler = object : WordpressRequestExecutor() {
+        val crawler = object : WordpressRequestExecutor("", RestClient()) {
             override fun download(page: Int, pageSize: Int): RequestResult {
                 val startIndex = ((page - 1) * pageSize)
                 val endIndex = (page * pageSize - 1)
@@ -27,7 +27,7 @@ internal class WordpressSiteCrawlerTest {
 
     @Test
     fun crawler2() {
-        val crawler = object : WordpressRequestExecutor() {
+        val crawler = object : WordpressRequestExecutor("", RestClient()) {
             override fun download(page: Int, pageSize: Int): RequestResult {
                 val startIndex = ((page - 1) * pageSize)
                 val endIndex = (page * pageSize - 1)
@@ -47,7 +47,7 @@ internal class WordpressSiteCrawlerTest {
 
     @Test
     fun crawler3() {
-        val crawler = object : WordpressRequestExecutor() {
+        val crawler = object : WordpressRequestExecutor("", RestClient()) {
             override fun download(page: Int, pageSize: Int): RequestResult {
                 val startIndex = ((page - 1) * pageSize)
                 val endIndex = (page * pageSize - 1)
@@ -63,5 +63,12 @@ internal class WordpressSiteCrawlerTest {
 
         val wordpressSiteCrawler = WordpressSiteCrawler("http://myhost", 14, crawler)
         wordpressSiteCrawler.doIt()
+    }*/
+
+    @Test
+    fun downloadPages() {
+        val wordpressRequestExecutor = WordpressRequestExecutor("http://www.fernuni-hagen.de/KSW/portale/babw", RestClient())
+        val wordpressSiteCrawler = WordpressSiteCrawler("", 8, wordpressRequestExecutor)
+        wordpressSiteCrawler.getPages()
     }
 }
