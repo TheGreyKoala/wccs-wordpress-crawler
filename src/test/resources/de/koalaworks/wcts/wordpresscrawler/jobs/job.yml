@@ -20,4 +20,6 @@ sites:
   - http://www.fernuni-hagen.de/KSW/portale/basoz/
   - http://www.fernuni-hagen.de/KSW/portale/masis/
 
-pageSize: 24
+crawler:
+  pageSize: 24
+  maxConcurrentRequests: 3

@@ -17,6 +17,6 @@ fun main(args: Array<String>) {
     logger.debug("Job parameters: {}", job)
 
     val wordpressRequestExecutor = WordpressRequestExecutor("", RestClient())
-    val wordpressSiteCrawler = WordpressSiteCrawler(job.sites[0], job.pageSize, wordpressRequestExecutor)
+    val wordpressSiteCrawler = WordpressSiteCrawler(job.sites[0], job.crawler.pageSize, wordpressRequestExecutor)
     wordpressSiteCrawler.doIt()
 }
