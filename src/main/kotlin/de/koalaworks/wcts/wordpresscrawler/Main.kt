@@ -3,6 +3,11 @@ package de.koalaworks.wcts.wordpresscrawler
 import de.koalaworks.wcts.wordpresscrawler.jobs.JobReader
 import org.slf4j.LoggerFactory
 import java.nio.file.Paths
+import java.util.concurrent.Callable
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.function.Supplier
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -16,7 +21,8 @@ fun main(args: Array<String>) {
     val job = JobReader(jobFile).readJob()
     logger.debug("Job parameters: {}", job)
 
-    val wordpressRequestExecutor = WordpressRequestExecutor("", RestClient())
-    val wordpressSiteCrawler = WordpressSiteCrawler(job.sites[0], job.crawler.pageSize, wordpressRequestExecutor)
-    wordpressSiteCrawler.doIt()
+    val executorService = Executors.newFixedThreadPool(job.crawler.maxConcurrentRequests)
+    val master = Master(job, executorService)
+    master.run()
+    executorService.shutdown()
 }

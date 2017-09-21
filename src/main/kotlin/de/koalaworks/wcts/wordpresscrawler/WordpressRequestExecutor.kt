@@ -3,11 +3,9 @@ package de.koalaworks.wcts.wordpresscrawler
 import com.google.gson.Gson
 import org.slf4j.LoggerFactory
 import com.google.gson.reflect.TypeToken
-import sun.misc.Request
-import java.util.concurrent.Future
 
 
-open class WordpressRequestExecutor(siteUrl: String, private val restClient: RestClient) {
+open class WordpressRequestExecutor(val siteUrl: String, private val restClient: RestClient) {
     private val pagesUrl: String = siteUrl + "/wp-json/wp/v2/pages"
     private val postsUrl: String = siteUrl + "/wp-json/wp/v2/posts"
     private val gson: Gson = Gson()

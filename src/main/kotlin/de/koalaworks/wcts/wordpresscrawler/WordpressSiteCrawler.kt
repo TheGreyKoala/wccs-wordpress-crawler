@@ -1,72 +1,60 @@
 package de.koalaworks.wcts.wordpresscrawler
 
-class WordpressSiteCrawler(val siteUrl: String, pageSize: Int, val requestExecutor: WordpressRequestExecutor) {
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-    private var totalItems: Int = -1
-    private val pageSize: Int
+class WordpressSiteCrawler(val requestExecutor: WordpressRequestExecutor) {
 
-    init {
-        // TODO Reference default value from Job class
-        this.pageSize = if (pageSize == 0) 8 else this.getHighestPowerOfTwoBeneath(pageSize)
+    private companion object {
+        val logger = LoggerFactory.getLogger(WordpressSiteCrawler.javaClass)
     }
 
-    private fun getHighestPowerOfTwoBeneath(number: Int): Int {
-        var powerOf2 = 1
-        while (powerOf2 < number) {
-            powerOf2 = powerOf2 shl 1
-        }
-        return if (powerOf2 == number) number else powerOf2 shr 1
-    }
+    fun getPages(page: Int, pageSize: Int): RequestResult<Page> {
+        val normalizedPageSize = pageSize.greatestPowerOfTwo()
+        logger.debug("Requesting pages: site={}, page={}, pageSize={}, normalizedPageSize={}", requestExecutor.siteUrl, page, pageSize, normalizedPageSize)
 
-    fun doIt() {
-        doIt(1, pageSize)
-        val totalPages = totalItems / pageSize + (if (totalItems % pageSize != 0) 1 else 0)
-        for (i in 2..totalPages) {
-            doIt(i, pageSize)
-        }
-    }
-
-    fun getPages() {
-        getPages(1, pageSize)
-        val totalPages = totalItems / pageSize + (if (totalItems % pageSize != 0) 1 else 0)
-        for (i in 2..totalPages) {
-            getPages(i, pageSize)
-        }
-    }
-
-    private fun getPages(page: Int, pageSize: Int) {
         val result = requestExecutor.downloadPages(page, pageSize)
-        if (result.success) {
-            if (totalItems == -1) {
-                totalItems = result.totalItems
-            }
-            for (item in result.items) {
-                println(item.link)
-            }
+        logger.debug("Result: {}", result)
+        if (result.success || pageSize == 1) {
+            return result
         } else {
-            if (pageSize == 1) {
-                println("Page " + page + " (item " + (page - 1) + ") is evil")
-            } else {
-                getPages(page * 2 - 1, pageSize / 2)
-                getPages(page * 2, pageSize / 2)
-            }
+            // Do not run in parallel! This request was meant to be a single one.
+            // Therefore, if we split it, we might break the maximum number of concurrent requests
+            val leftHalfResult = getPages(page * 2 - 1, pageSize / 2)
+            val rightHalfResult = getPages(page * 2, pageSize / 2)
+
+            val resultsList = listOf(leftHalfResult, rightHalfResult)
+            val successfulRequests = resultsList.filter { it.success }
+            val failedRequests = resultsList.filter { !it.success }
+            failedRequests.logAll(logger)
+
+            val success = !successfulRequests.isEmpty()
+            // first() throws an exception, if it is empty
+            val totalItems = if (success) successfulRequests.first().totalItems else -1
+            val resultItems = successfulRequests.mergeItems()
+            return RequestResult(success, totalItems, resultItems)
         }
     }
 
-    private fun doIt(page: Int, pageSize: Int) {
-        val result = requestExecutor.download(page, pageSize)
-        if (result.success) {
-            if (totalItems == -1) {
-                totalItems = result.totalItems
+    private fun Int.greatestPowerOfTwo(): Int {
+        return if (this == 0) { 8 }
+        else {
+            var powerOf2 = 1
+            while (powerOf2 < this) {
+                powerOf2 = powerOf2 shl 1
             }
-            //return result.items
-        } else {
-            if (pageSize == 1) {
-                println("Page " + page + " (item " + (page - 1) + ") is evil")
-            } else {
-                doIt(page * 2 - 1, pageSize / 2)
-                doIt(page * 2, pageSize / 2)
-            }
+            if (powerOf2 == this) this else powerOf2 shr 1
         }
+    }
+
+    private fun List<RequestResult<Page>>.logAll(logger: Logger) {
+        this.forEach {
+            logger.error("Failed request. Result: {}", it)
+        }
+    }
+
+    private fun List<RequestResult<Page>>.mergeItems(): Collection<Page> {
+        return this.map { it.items }
+                .flatten()
     }
 }

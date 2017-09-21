@@ -2,8 +2,15 @@ package de.koalaworks.wcts.wordpresscrawler
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 
 internal class WordpressSiteCrawlerTest {
+
+    private companion object {
+        val logger = LoggerFactory.getLogger(WordpressSiteCrawlerTest.javaClass)
+    }
 
     /*@Test
     fun crawler() {
@@ -65,10 +72,14 @@ internal class WordpressSiteCrawlerTest {
         wordpressSiteCrawler.doIt()
     }*/
 
-    @Test
+    /*@Test
     fun downloadPages() {
+        val executorService = Executors.newFixedThreadPool(5)
+
         val wordpressRequestExecutor = WordpressRequestExecutor("http://www.fernuni-hagen.de/KSW/portale/babw", RestClient())
-        val wordpressSiteCrawler = WordpressSiteCrawler("", 8, wordpressRequestExecutor)
-        wordpressSiteCrawler.getPages()
-    }
+        val wordpressSiteCrawler = WordpressSiteCrawler("", 8, wordpressRequestExecutor, executorService)
+
+        val future = executorService.submit(wordpressSiteCrawler)
+        future.get()
+    }*/
 }
