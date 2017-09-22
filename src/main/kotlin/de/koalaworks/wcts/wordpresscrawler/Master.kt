@@ -21,7 +21,7 @@ class Master(private val job: Job, private val executorService: ExecutorService)
     fun run(): CompletableFuture<Void> {
         val restClient = RestClient()
         val siteFutures = job.sites
-            .map { WordpressRequestExecutor(it, restClient) }
+            .map { WordpressRequestExecutor(it.url, restClient) }
             .map { WordpressSiteCrawler(it) }
             .flatMap { crawler ->
                 val pagesProcessingFutures = requestAsync(crawler::getPages, 1)

@@ -4,7 +4,7 @@ import java.util.*
 
 data class Job(
         val classificationService: ClassificationService = ClassificationService(),
-        val sites: Array<String> = emptyArray(),
+        val sites: Array<Site> = emptyArray(),
         val crawler: Crawler = Crawler()){
 
     override fun equals(other: Any?): Boolean {
