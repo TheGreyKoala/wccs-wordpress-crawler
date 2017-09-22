@@ -21,5 +21,5 @@ sites:
   - http://www.fernuni-hagen.de/KSW/portale/masis/
 
 crawler:
-  pageSize: 24
-  maxConcurrentRequests: 3
+  pageSize: 8
+  maxConcurrentRequests: 5

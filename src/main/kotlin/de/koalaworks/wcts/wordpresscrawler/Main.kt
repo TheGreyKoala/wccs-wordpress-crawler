@@ -23,6 +23,10 @@ fun main(args: Array<String>) {
 
     val executorService = Executors.newFixedThreadPool(job.crawler.maxConcurrentRequests)
     val master = Master(job, executorService)
-    master.run()
+    val start = System.currentTimeMillis()
+    val run = master.run()
+    run.join()
+    val duration = System.currentTimeMillis() - start
+    logger.info("Processed {} items, {} erroneous items of {} items in {} ms.", master.counter, master.errorCounter, master.totalItems, duration)
     executorService.shutdown()
 }

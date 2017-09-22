@@ -1,7 +1,14 @@
 package de.koalaworks.wcts.wordpresscrawler
 
-data class RequestResult<out T>(val success: Boolean, val totalItems: Int, val items: Collection<T>) {
+open class RequestResult<out T>(
+    val success: Boolean,
+    val totalItems: Int,
+    val items: Collection<T>,
+    effectivePageSize: Int,
+    val erroneousItems: Int) {
+
+    val totalPages: Int = totalItems / effectivePageSize + (if (totalItems % effectivePageSize != 0) 1 else 0)
     override fun toString(): String {
-        return "RequestResult(success=$success, totalItems=$totalItems, items=$items)"
+        return "RequestResult(success=$success, totalItems=$totalItems, erroneousItems=$erroneousItems, totalPages=$totalPages)"
     }
 }
