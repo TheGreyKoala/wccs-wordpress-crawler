@@ -6,12 +6,12 @@ class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor
     private val logger = LoggerFactory.getLogger(WordpressSiteCrawler::class.java)
 
     fun getPages(resultPage: Int, resultPageSize: Int): RequestResult {
-        logger.debug("Requesting pages: site={}, resultPage={}, resultPageSize={}", requestExecutor.siteUrl, resultPage, resultPageSize)
+        logger.debug("Requesting pages: site={}, resultPage={}, resultPageSize={}", requestExecutor.site, resultPage, resultPageSize)
         return queryResources(requestExecutor::downloadPages, resultPage, resultPageSize)
     }
 
     fun getPosts(resultPage: Int, resultPageSize: Int): RequestResult {
-        logger.debug("Requesting posts: site={}, resultPage={}, resultPageSize={}", requestExecutor.siteUrl, resultPage, resultPageSize)
+        logger.debug("Requesting posts: site={}, resultPage={}, resultPageSize={}", requestExecutor.site, resultPage, resultPageSize)
         return queryResources(requestExecutor::downloadPosts, resultPage, resultPageSize)
     }
 
@@ -23,7 +23,7 @@ class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor
             logger.debug("Result: {}", result)
             return result
         } else {
-            logger.error("Request failed: site={}, resultPage={}, resultPageSize={}", requestExecutor.siteUrl, resultPage, normalizedPageSize)
+            logger.error("Request failed: site={}, resultPage={}, resultPageSize={}", requestExecutor.site, resultPage, normalizedPageSize)
             if (normalizedPageSize == 1) {
                 return result
             } else {
@@ -39,7 +39,7 @@ class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor
                 // first() throws an exception, if it is empty
                 val totalItems = if (success) successfulRequests.first().totalItems else -1
                 val resultItems = successfulRequests.mergeItems()
-                val newResult = RequestResult(success, totalItems, resultItems, normalizedPageSize, leftHalfResult.erroneousItems + rightHalfResult.erroneousItems)
+                val newResult = RequestResult(success, totalItems, resultItems, normalizedPageSize, leftHalfResult.erroneousItems + rightHalfResult.erroneousItems, result.site)
                 logger.debug("Result: {}", newResult)
                 return newResult
             }

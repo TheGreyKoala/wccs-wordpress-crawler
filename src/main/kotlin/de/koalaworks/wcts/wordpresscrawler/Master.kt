@@ -10,18 +10,18 @@ import java.util.function.Supplier
 
 class Master(private val job: Job, private val executorService: ExecutorService) {
 
-    var counter: AtomicInteger = AtomicInteger(0)
-    var errorCounter: AtomicInteger = AtomicInteger(0)
-    var totalItems: AtomicInteger = AtomicInteger(0)
+    var counter = AtomicInteger(0)
+    var errorCounter = AtomicInteger(0)
+    var totalItems = AtomicInteger(0)
 
-    private companion object {
-        val logger = LoggerFactory.getLogger(Master.javaClass)
-    }
+    private val restClient = RestClient()
+    private val classificationEngine = ClassificationEngine(job.classificationService, restClient)
+
+    val logger = LoggerFactory.getLogger(Master::class.java)
 
     fun run(): CompletableFuture<Void> {
-        val restClient = RestClient()
         val siteFutures = job.sites
-            .map { WordpressRequestExecutor(it.url, restClient) }
+            .map { WordpressRequestExecutor(it, restClient) }
             .map { WordpressSiteCrawler(it) }
             .flatMap { crawler ->
                 val pagesProcessingFutures = requestAsync(crawler::getPages, 1)
@@ -77,6 +77,7 @@ class Master(private val job: Job, private val executorService: ExecutorService)
 
     private fun callTypingEngine(result: RequestResult) {
         logger.info("Calling typing engine with {} items.", result.items.size)
+        classificationEngine.classify(result.site, result.items)
     }
 
     private fun <T> allOf(futures: List<CompletableFuture<out T>>): CompletableFuture<Void> {

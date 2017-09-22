@@ -18,10 +18,10 @@ sites:
     name: B.Sc. Psychologie
     url: http://www.fernuni-hagen.de/KSW/portale/bscpsy
   - id: mabm
-    name: M.A. Bildung und Medien: eEducation
+    name: "M.A. Bildung und Medien: eEducation"
     url: http://www.fernuni-hagen.de/KSW/portale/mabm
   - id: maem
-    name: M. A. Europäische Moderne: Geschichte und Literatur
+    name: "M. A. Europäische Moderne: Geschichte und Literatur"
     url: http://www.fernuni-hagen.de/KSW/portale/maem
   - id: mage
     name: M.A. Geschichte Europas
@@ -45,7 +45,7 @@ sites:
     name: B.A. Soziologie
     url: http://www.fernuni-hagen.de/KSW/portale/basoz
   - id: masis
-    name: M.A. Soziologie: Individualisierung und Sozialstruktur
+    name: "M.A. Soziologie: Individualisierung und Sozialstruktur"
     url: http://www.fernuni-hagen.de/KSW/portale/masis
 
 crawler:

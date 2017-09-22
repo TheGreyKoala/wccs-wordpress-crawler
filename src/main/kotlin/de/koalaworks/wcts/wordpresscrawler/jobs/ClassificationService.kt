@@ -6,6 +6,8 @@ data class ClassificationService(
         val port:String = "44284",
         val path: String = "/") {
 
+    val fullUrl = "$scheme://$host:$port$path"
+
     override fun toString(): String {
         return "ClassificationService(scheme='$scheme', host='$host', port='$port', path='$path')"
     }

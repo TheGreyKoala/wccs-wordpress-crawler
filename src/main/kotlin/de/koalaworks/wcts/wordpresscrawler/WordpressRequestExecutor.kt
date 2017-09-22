@@ -3,10 +3,11 @@ package de.koalaworks.wcts.wordpresscrawler
 import com.google.gson.Gson
 import org.slf4j.LoggerFactory
 import com.google.gson.reflect.TypeToken
+import de.koalaworks.wcts.wordpresscrawler.jobs.Site
 
-open class WordpressRequestExecutor(val siteUrl: String, private val restClient: RestClient) {
-    private val pagesUrl: String = siteUrl + "/wp-json/wp/v2/pages"
-    private val postsUrl: String = siteUrl + "/wp-json/wp/v2/posts"
+open class WordpressRequestExecutor(val site: Site, private val restClient: RestClient) {
+    private val pagesUrl: String = site.url + "/wp-json/wp/v2/pages"
+    private val postsUrl: String = site.url + "/wp-json/wp/v2/posts"
     private val gson: Gson = Gson()
     private val wordpressResourceCollectionType = object : TypeToken<Collection<WordpressResource>>() {}.type
 
@@ -31,12 +32,12 @@ open class WordpressRequestExecutor(val siteUrl: String, private val restClient:
             if (response.status == 200) {
                 val wordpressResources: Collection<WordpressResource> = gson.fromJson(response.body, wordpressResourceCollectionType)
                 val totalPages = response.headers["X-WP-Total"]!![0].toInt()
-                RequestResult(true, totalPages, wordpressResources, resultPageSize, 0)
+                RequestResult(true, totalPages, wordpressResources, resultPageSize, 0, site)
             } else {
-                RequestResult(false, -1, emptyList(), resultPageSize, resultPageSize)
+                RequestResult(false, -1, emptyList(), resultPageSize, resultPageSize, site)
             }
         } catch (e: Exception) {
-            RequestResult(false, -1, emptyList(), resultPageSize, resultPageSize)
+            RequestResult(false, -1, emptyList(), resultPageSize, resultPageSize, site)
         }
     }
 }
