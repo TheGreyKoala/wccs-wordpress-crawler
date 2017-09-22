@@ -1,9 +1,9 @@
 package de.koalaworks.wcts.wordpresscrawler
 
-open class RequestResult<out T>(
+open class RequestResult(
     val success: Boolean,
     val totalItems: Int,
-    val items: Collection<T>,
+    val items: Collection<WordpressResource>,
     effectivePageSize: Int,
     val erroneousItems: Int) {
 

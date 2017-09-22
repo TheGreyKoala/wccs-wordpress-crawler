@@ -4,32 +4,39 @@ import com.google.gson.Gson
 import org.slf4j.LoggerFactory
 import com.google.gson.reflect.TypeToken
 
-
 open class WordpressRequestExecutor(val siteUrl: String, private val restClient: RestClient) {
     private val pagesUrl: String = siteUrl + "/wp-json/wp/v2/pages"
     private val postsUrl: String = siteUrl + "/wp-json/wp/v2/posts"
     private val gson: Gson = Gson()
-    private val pageColelctionType = object : TypeToken<Collection<Page>>() {}.type
+    private val wordpressResourceCollectionType = object : TypeToken<Collection<WordpressResource>>() {}.type
 
     private val logger = LoggerFactory.getLogger(WordpressRequestExecutor::class.java)
 
-    open fun download(page: Int, pageSize: Int): RequestResult<String> {
-        logger.debug("Downloading pageSize={}, page={}", pageSize, page)
-        return RequestResult(true, 100, emptyList(), pageSize, 0)
+    fun downloadPages(resultPage: Int, resultPageSize:Int): RequestResult {
+        return query(pagesUrl, resultPage, resultPageSize)
     }
 
-    fun downloadPages(page: Int, pageSize:Int): PageResult {
+    fun downloadPosts(resultPage: Int, resultPageSize:Int): RequestResult {
+        return query(postsUrl, resultPage, resultPageSize)
+    }
+
+    private fun query(url: String, resultPage: Int, resultPageSize: Int): RequestResult {
+        logger.debug("Executing query: url={}, resultPage={}, resultPageSize={}", url, resultPage, resultPageSize)
         return try {
             val response = restClient.
-                    get(pagesUrl)
-                    .queryString(mapOf("page" to page, "per_page" to pageSize, "context" to "embed"))
+                    get(url)
+                    .queryString(mapOf("page" to resultPage, "per_page" to resultPageSize, "context" to "embed"))
                     .asString()
 
-            val pages: Collection<Page> = gson.fromJson(response.body, pageColelctionType)
-            val totalPages = response.headers["X-WP-Total"]!![0].toInt()
-            PageResult(true, totalPages, pages, pageSize, 0)
+            if (response.status == 200) {
+                val wordpressResources: Collection<WordpressResource> = gson.fromJson(response.body, wordpressResourceCollectionType)
+                val totalPages = response.headers["X-WP-Total"]!![0].toInt()
+                RequestResult(true, totalPages, wordpressResources, resultPageSize, 0)
+            } else {
+                RequestResult(false, -1, emptyList(), resultPageSize, resultPageSize)
+            }
         } catch (e: Exception) {
-            PageResult(false, -1, emptyList(), pageSize, pageSize)
+            RequestResult(false, -1, emptyList(), resultPageSize, resultPageSize)
         }
     }
 }

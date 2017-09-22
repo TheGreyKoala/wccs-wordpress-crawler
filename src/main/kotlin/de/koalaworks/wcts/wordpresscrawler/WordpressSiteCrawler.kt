@@ -3,28 +3,34 @@ package de.koalaworks.wcts.wordpresscrawler
 import org.slf4j.LoggerFactory
 
 class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor) {
+    private val logger = LoggerFactory.getLogger(WordpressSiteCrawler::class.java)
 
-    private companion object {
-        val logger = LoggerFactory.getLogger(WordpressSiteCrawler.javaClass)
+    fun getPages(resultPage: Int, resultPageSize: Int): RequestResult {
+        logger.debug("Requesting pages: site={}, resultPage={}, resultPageSize={}", requestExecutor.siteUrl, resultPage, resultPageSize)
+        return queryResources(requestExecutor::downloadPages, resultPage, resultPageSize)
     }
 
-    fun getPages(page: Int, pageSize: Int): PageResult {
-        val normalizedPageSize = pageSize.greatestPowerOfTwo()
-        logger.debug("Requesting pages: site={}, page={}, pageSize={}, normalizedPageSize={}", requestExecutor.siteUrl, page, pageSize, normalizedPageSize)
+    fun getPosts(resultPage: Int, resultPageSize: Int): RequestResult {
+        logger.debug("Requesting posts: site={}, resultPage={}, resultPageSize={}", requestExecutor.siteUrl, resultPage, resultPageSize)
+        return queryResources(requestExecutor::downloadPosts, resultPage, resultPageSize)
+    }
 
-        val result = requestExecutor.downloadPages(page, normalizedPageSize)
+    private fun queryResources(executeQuery: (resultPage: Int, resultPageSize: Int) -> RequestResult, resultPage: Int, resultPageSize: Int): RequestResult {
+        val normalizedPageSize = resultPageSize.greatestPowerOfTwo()
+
+        val result = executeQuery(resultPage, normalizedPageSize)
         if (result.success) {
             logger.debug("Result: {}", result)
             return result
         } else {
-            logger.error("Request failed: site={}, page={}, pageSize={}", requestExecutor.siteUrl, page, normalizedPageSize)
+            logger.error("Request failed: site={}, resultPage={}, resultPageSize={}", requestExecutor.siteUrl, resultPage, normalizedPageSize)
             if (normalizedPageSize == 1) {
                 return result
             } else {
                 // Do not run in parallel! This request was meant to be a single one.
                 // Therefore, if we split it, we might break the maximum number of concurrent requests
-                val leftHalfResult = getPages(page * 2 - 1, normalizedPageSize / 2)
-                val rightHalfResult = getPages(page * 2, normalizedPageSize / 2)
+                val leftHalfResult = queryResources(executeQuery, resultPage * 2 - 1, normalizedPageSize / 2)
+                val rightHalfResult = queryResources(executeQuery, resultPage * 2, normalizedPageSize / 2)
 
                 val resultsList = listOf(leftHalfResult, rightHalfResult)
                 val successfulRequests = resultsList.filter { it.success }
@@ -33,7 +39,7 @@ class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor
                 // first() throws an exception, if it is empty
                 val totalItems = if (success) successfulRequests.first().totalItems else -1
                 val resultItems = successfulRequests.mergeItems()
-                val newResult = PageResult(success, totalItems, resultItems, normalizedPageSize, leftHalfResult.erroneousItems + rightHalfResult.erroneousItems)
+                val newResult = RequestResult(success, totalItems, resultItems, normalizedPageSize, leftHalfResult.erroneousItems + rightHalfResult.erroneousItems)
                 logger.debug("Result: {}", newResult)
                 return newResult
             }
@@ -51,7 +57,7 @@ class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor
         }
     }
 
-    private fun List<PageResult>.mergeItems(): Collection<Page> {
+    private fun List<RequestResult>.mergeItems(): Collection<WordpressResource> {
         return this.map { it.items }
                 .flatten()
     }

@@ -9,16 +9,16 @@ import java.util.concurrent.Executors
 internal class WordpressSiteCrawlerTest {
 
     private companion object {
-        val logger = LoggerFactory.getLogger(WordpressSiteCrawlerTest.javaClass)
+        val logger = LoggerFactory.getLogger(WordpressSiteCrawlerTest::class.java)
     }
 
     /*@Test
     fun crawler() {
         val crawler = object : WordpressRequestExecutor("", RestClient()) {
-            override fun download(page: Int, pageSize: Int): RequestResult {
-                val startIndex = ((page - 1) * pageSize)
-                val endIndex = (page * pageSize - 1)
-                println("Request parameters page=$page, pageSize=$pageSize")
+            override fun download(page: Int, resultPageSize: Int): RequestResult {
+                val startIndex = ((page - 1) * resultPageSize)
+                val endIndex = (page * resultPageSize - 1)
+                println("Request parameters page=$page, resultPageSize=$resultPageSize")
                 println("Requesting items $startIndex..$endIndex")
                 return if (47 in startIndex..endIndex) {
                     RequestResult(false, -1, emptyList())
@@ -35,10 +35,10 @@ internal class WordpressSiteCrawlerTest {
     @Test
     fun crawler2() {
         val crawler = object : WordpressRequestExecutor("", RestClient()) {
-            override fun download(page: Int, pageSize: Int): RequestResult {
-                val startIndex = ((page - 1) * pageSize)
-                val endIndex = (page * pageSize - 1)
-                println("Request parameters page=$page, pageSize=$pageSize")
+            override fun download(page: Int, resultPageSize: Int): RequestResult {
+                val startIndex = ((page - 1) * resultPageSize)
+                val endIndex = (page * resultPageSize - 1)
+                println("Request parameters page=$page, resultPageSize=$resultPageSize")
                 println("Requesting items $startIndex..$endIndex")
                 return if (3 in startIndex..endIndex) {
                     RequestResult(false, -1, emptyList())
@@ -55,10 +55,10 @@ internal class WordpressSiteCrawlerTest {
     @Test
     fun crawler3() {
         val crawler = object : WordpressRequestExecutor("", RestClient()) {
-            override fun download(page: Int, pageSize: Int): RequestResult {
-                val startIndex = ((page - 1) * pageSize)
-                val endIndex = (page * pageSize - 1)
-                println("Request parameters page=$page, pageSize=$pageSize")
+            override fun download(page: Int, resultPageSize: Int): RequestResult {
+                val startIndex = ((page - 1) * resultPageSize)
+                val endIndex = (page * resultPageSize - 1)
+                println("Request parameters page=$page, resultPageSize=$resultPageSize")
                 println("Requesting items $startIndex..$endIndex")
                 return if (8 in startIndex..endIndex) {
                     RequestResult(false, -1, emptyList())
