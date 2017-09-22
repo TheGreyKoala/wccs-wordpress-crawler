@@ -1,23 +1,24 @@
-package de.koalaworks.wcts.wordpresscrawler
+package de.koalaworks.wcts.wordpresscrawler.wordpress
 
 import com.google.gson.Gson
 import org.slf4j.LoggerFactory
 import com.google.gson.reflect.TypeToken
-import de.koalaworks.wcts.wordpresscrawler.jobs.Site
+import de.koalaworks.wcts.wordpresscrawler.rest.RestClient
+import de.koalaworks.wcts.wordpresscrawler.job.Site
 
-open class WordpressRequestExecutor(val site: Site, private val restClient: RestClient) {
+open class SimpleRequestExecutor(val site: Site, private val restClient: RestClient): RequestExecutor {
     private val pagesUrl: String = site.url + "/wp-json/wp/v2/pages"
     private val postsUrl: String = site.url + "/wp-json/wp/v2/posts"
     private val gson: Gson = Gson()
-    private val wordpressResourceCollectionType = object : TypeToken<Collection<WordpressResource>>() {}.type
+    private val resourceCollectionType = object : TypeToken<Collection<Resource>>() {}.type
 
-    private val logger = LoggerFactory.getLogger(WordpressRequestExecutor::class.java)
+    private val logger = LoggerFactory.getLogger(SimpleRequestExecutor::class.java)
 
-    fun downloadPages(resultPage: Int, resultPageSize:Int): RequestResult {
+    override fun getPages(resultPage: Int, resultPageSize:Int): RequestResult {
         return query(pagesUrl, resultPage, resultPageSize)
     }
 
-    fun downloadPosts(resultPage: Int, resultPageSize:Int): RequestResult {
+    override fun getPosts(resultPage: Int, resultPageSize:Int): RequestResult {
         return query(postsUrl, resultPage, resultPageSize)
     }
 
@@ -30,9 +31,9 @@ open class WordpressRequestExecutor(val site: Site, private val restClient: Rest
                     .asString()
 
             if (response.status == 200) {
-                val wordpressResources: Collection<WordpressResource> = gson.fromJson(response.body, wordpressResourceCollectionType)
+                val resources: Collection<Resource> = gson.fromJson(response.body, resourceCollectionType)
                 val totalPages = response.headers["X-WP-Total"]!![0].toInt()
-                RequestResult(true, totalPages, wordpressResources, resultPageSize, 0, site)
+                RequestResult(true, totalPages, resources, resultPageSize, 0, site)
             } else {
                 RequestResult(false, -1, emptyList(), resultPageSize, resultPageSize, site)
             }

@@ -1,18 +1,18 @@
-package de.koalaworks.wcts.wordpresscrawler
+package de.koalaworks.wcts.wordpresscrawler.wordpress
 
 import org.slf4j.LoggerFactory
 
-class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor) {
-    private val logger = LoggerFactory.getLogger(WordpressSiteCrawler::class.java)
+class ErrorHandlingRequestExecutor(private val requestExecutor: SimpleRequestExecutor): RequestExecutor {
+    private val logger = LoggerFactory.getLogger(ErrorHandlingRequestExecutor::class.java)
 
-    fun getPages(resultPage: Int, resultPageSize: Int): RequestResult {
+    override fun getPages(resultPage: Int, resultPageSize: Int): RequestResult {
         logger.debug("Requesting pages: site={}, resultPage={}, resultPageSize={}", requestExecutor.site, resultPage, resultPageSize)
-        return queryResources(requestExecutor::downloadPages, resultPage, resultPageSize)
+        return queryResources(requestExecutor::getPages, resultPage, resultPageSize)
     }
 
-    fun getPosts(resultPage: Int, resultPageSize: Int): RequestResult {
+    override fun getPosts(resultPage: Int, resultPageSize: Int): RequestResult {
         logger.debug("Requesting posts: site={}, resultPage={}, resultPageSize={}", requestExecutor.site, resultPage, resultPageSize)
-        return queryResources(requestExecutor::downloadPosts, resultPage, resultPageSize)
+        return queryResources(requestExecutor::getPosts, resultPage, resultPageSize)
     }
 
     private fun queryResources(executeQuery: (resultPage: Int, resultPageSize: Int) -> RequestResult, resultPage: Int, resultPageSize: Int): RequestResult {
@@ -57,7 +57,7 @@ class WordpressSiteCrawler(private val requestExecutor: WordpressRequestExecutor
         }
     }
 
-    private fun List<RequestResult>.mergeItems(): Collection<WordpressResource> {
+    private fun List<RequestResult>.mergeItems(): Collection<Resource> {
         return this.map { it.items }
                 .flatten()
     }

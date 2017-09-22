@@ -1,0 +1,43 @@
+sites:
+  - id: babw
+    name: B.A. Bildungswissenschaft
+    url: http://www.fernuni-hagen.de/KSW/portale/babw
+  - id: bakw
+    name: B.A. Kulturwissenschaften
+    url: http://www.fernuni-hagen.de/KSW/portale/bakw
+  - id: bapvs
+    name: B.A. Politikwissenschaft, Verwaltungswissenschaft, Soziologie (PVS)
+    url: http://www.fernuni-hagen.de/KSW/portale/bapvs
+  - id: bscpsy
+    name: B.Sc. Psychologie
+    url: http://www.fernuni-hagen.de/KSW/portale/bscpsy
+  - id: mabm
+    name: "M.A. Bildung und Medien: eEducation"
+    url: http://www.fernuni-hagen.de/KSW/portale/mabm
+  - id: maem
+    name: "M. A. Europäische Moderne: Geschichte und Literatur"
+    url: http://www.fernuni-hagen.de/KSW/portale/maem
+  - id: mage
+    name: M.A. Geschichte Europas
+    url: http://www.fernuni-hagen.de/KSW/portale/mage
+  - id: magov
+    name: M.A. Governance
+    url: http://www.fernuni-hagen.de/KSW/portale/magov
+  - id: maphil
+    name: M.A. Philosophie
+    url: http://www.fernuni-hagen.de/KSW/portale/maphil
+  - id: mscpsy
+    name: M.Sc. Psychologie
+    url: http://www.fernuni-hagen.de/KSW/portale/mscpsy
+  - id: masoz
+    name: M.A. Soziologie – Zugänge zur Gegenwartsgesellschaft
+    url: http://www.fernuni-hagen.de/KSW/portale/masoz
+  - id: bakwof
+    name: B.A. Kulturwissenschaften (ohne Fachschwerpunkt)
+    url: http://www.fernuni-hagen.de/KSW/portale/bakwof
+  - id: basoz
+    name: B.A. Soziologie
+    url: http://www.fernuni-hagen.de/KSW/portale/basoz
+  - id: masis
+    name: "M.A. Soziologie: Individualisierung und Sozialstruktur"
+    url: http://www.fernuni-hagen.de/KSW/portale/masis

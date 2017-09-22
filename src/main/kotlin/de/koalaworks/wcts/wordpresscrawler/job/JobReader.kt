@@ -1,4 +1,4 @@
-package de.koalaworks.wcts.wordpresscrawler.jobs
+package de.koalaworks.wcts.wordpresscrawler.job
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory

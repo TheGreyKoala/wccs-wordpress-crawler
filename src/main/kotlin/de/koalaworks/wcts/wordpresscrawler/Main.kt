@@ -1,13 +1,10 @@
 package de.koalaworks.wcts.wordpresscrawler
 
-import de.koalaworks.wcts.wordpresscrawler.jobs.JobReader
+import de.koalaworks.wcts.wordpresscrawler.job.JobReader
+import de.koalaworks.wcts.wordpresscrawler.rest.RestClient
 import org.slf4j.LoggerFactory
 import java.nio.file.Paths
-import java.util.concurrent.Callable
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.function.Supplier
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -22,11 +19,12 @@ fun main(args: Array<String>) {
     logger.debug("Job parameters: {}", job)
 
     val executorService = Executors.newFixedThreadPool(job.crawler.maxConcurrentRequests)
-    val master = Master(job, executorService)
+    val crawler = ClassifyingCrawler(job, executorService)
     val start = System.currentTimeMillis()
-    val run = master.run()
-    run.join()
+    val crawlerFuture = crawler.run()
+    crawlerFuture.join()
     val duration = System.currentTimeMillis() - start
-    logger.info("Processed {} items, {} erroneous items of {} items in {} ms.", master.counter, master.errorCounter, master.totalItems, duration)
+    logger.info("Processed {} items, {} erroneous items of {} items in {} ms.", crawler.counter, crawler.errorCounter, crawler.totalItems, duration)
     executorService.shutdown()
+    RestClient.shutdown()
 }

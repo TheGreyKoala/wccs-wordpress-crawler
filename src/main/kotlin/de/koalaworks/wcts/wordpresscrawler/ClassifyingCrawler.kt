@@ -1,28 +1,36 @@
 package de.koalaworks.wcts.wordpresscrawler
 
-import de.koalaworks.wcts.wordpresscrawler.jobs.Job
+import com.mashape.unirest.http.HttpResponse
+import com.mashape.unirest.http.JsonNode
+import de.koalaworks.wcts.wordpresscrawler.classification.RequestExecutor
+import de.koalaworks.wcts.wordpresscrawler.job.Job
+import de.koalaworks.wcts.wordpresscrawler.rest.RestClient
+import de.koalaworks.wcts.wordpresscrawler.wordpress.ErrorHandlingRequestExecutor
+import de.koalaworks.wcts.wordpresscrawler.wordpress.RequestResult
+import de.koalaworks.wcts.wordpresscrawler.wordpress.SimpleRequestExecutor
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Function
 import java.util.function.Supplier
 
-class Master(private val job: Job, private val executorService: ExecutorService) {
+class ClassifyingCrawler(private val job: Job, private val executorService: ExecutorService) {
 
     var counter = AtomicInteger(0)
     var errorCounter = AtomicInteger(0)
     var totalItems = AtomicInteger(0)
 
-    private val restClient = RestClient()
-    private val classificationEngine = ClassificationEngine(job.classificationService, restClient)
+    private val classificationEngine = RequestExecutor(job.classificationService, RestClient)
+    private val classificationServiceFutures = ArrayList<Future<HttpResponse<JsonNode>>>()
 
-    val logger = LoggerFactory.getLogger(Master::class.java)
+    val logger = LoggerFactory.getLogger(ClassifyingCrawler::class.java)
 
     fun run(): CompletableFuture<Void> {
         val siteFutures = job.sites
-            .map { WordpressRequestExecutor(it, restClient) }
-            .map { WordpressSiteCrawler(it) }
+            .map { SimpleRequestExecutor(it, RestClient) }
+            .map { ErrorHandlingRequestExecutor(it) }
             .flatMap { crawler ->
                 val pagesProcessingFutures = requestAsync(crawler::getPages, 1)
                         .thenApplyAsync { processFirstResultPage(it, crawler::getPages) }
@@ -41,7 +49,20 @@ class Master(private val job: Job, private val executorService: ExecutorService)
                 // The result will be a Future, that is completed, when all pages resp. posts for a site were processed.
                 it.join()
             }
-        return allOf(siteFutures)
+
+        return allOf(siteFutures).thenAccept {
+            // All pages and posts of all sites have been discovered
+            // and for each a request to the classification engine was made.
+            // Now we need for these requests to finish.
+            classificationServiceFutures.forEach {
+                try {
+                    it.get()
+                } catch (e: Exception) {
+                    // Just prevent the exception from being thrown.
+                    // Will be logged in Unirest callback.
+                }
+            }
+        }
     }
 
     private fun processFirstResultPage(
@@ -77,7 +98,10 @@ class Master(private val job: Job, private val executorService: ExecutorService)
 
     private fun callTypingEngine(result: RequestResult) {
         logger.info("Calling typing engine with {} items.", result.items.size)
-        classificationEngine.classify(result.site, result.items)
+        val future = classificationEngine.classify(result.site, result.items)
+        synchronized(classificationServiceFutures) {
+            classificationServiceFutures.add(future)
+        }
     }
 
     private fun <T> allOf(futures: List<CompletableFuture<out T>>): CompletableFuture<Void> {
