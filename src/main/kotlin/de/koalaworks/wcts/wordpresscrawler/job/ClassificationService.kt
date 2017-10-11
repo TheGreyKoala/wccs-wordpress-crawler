@@ -4,7 +4,7 @@ data class ClassificationService(
         val scheme: String = "http",
         val host: String = "localhost",
         val port:String = "44284",
-        val path: String = "/") {
+        val path: String = "/classifications") {
 
     val fullUrl = "$scheme://$host:$port$path"
 

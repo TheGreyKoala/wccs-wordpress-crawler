@@ -43,7 +43,7 @@ class JobsReaderTest {
             Executable { assertEquals("http", job.classificationService.scheme, "Unexpected scheme") },
             Executable { assertEquals("localhost", job.classificationService.host, "Unexpected host") },
             Executable { assertEquals("44284", job.classificationService.port, "Unexpected port") },
-            Executable { assertEquals("/", job.classificationService.path, "Unexpected path") },
+            Executable { assertEquals("/classifications", job.classificationService.path, "Unexpected path") },
             Executable { assertEquals(8, job.crawler.resultPageSize, "Unexpected page size") },
             Executable { assertEquals(5, job.crawler.maxConcurrentRequests, "Unexpected number of concurrent requests") }
         )
