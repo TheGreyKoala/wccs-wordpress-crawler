@@ -1,10 +1,10 @@
-package de.koalaworks.wcts.wordpresscrawler.wordpress
+package de.koalaworks.wccs.wordpresscrawler.wordpress
 
 import com.google.gson.Gson
 import org.slf4j.LoggerFactory
 import com.google.gson.reflect.TypeToken
-import de.koalaworks.wcts.wordpresscrawler.rest.RestClient
-import de.koalaworks.wcts.wordpresscrawler.job.Site
+import de.koalaworks.wccs.wordpresscrawler.rest.RestClient
+import de.koalaworks.wccs.wordpresscrawler.job.Site
 
 open class SimpleRequestExecutor(val site: Site, private val restClient: RestClient): RequestExecutor {
     private val pagesUrl: String = site.url + "/wp-json/wp/v2/pages"

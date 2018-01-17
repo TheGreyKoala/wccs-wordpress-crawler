@@ -1,15 +1,15 @@
-package de.koalaworks.wcts.wordpresscrawler.classification
+package de.koalaworks.wccs.wordpresscrawler.classification
 
 import com.google.gson.Gson
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.JsonNode
 import com.mashape.unirest.http.async.Callback
-import de.koalaworks.wcts.wordpresscrawler.job.ClassificationService
-import de.koalaworks.wcts.wordpresscrawler.job.Site
+import de.koalaworks.wccs.wordpresscrawler.job.ClassificationService
+import de.koalaworks.wccs.wordpresscrawler.job.Site
 import java.util.concurrent.Future
 import com.mashape.unirest.http.exceptions.UnirestException
-import de.koalaworks.wcts.wordpresscrawler.rest.RestClient
-import de.koalaworks.wcts.wordpresscrawler.wordpress.Resource
+import de.koalaworks.wccs.wordpresscrawler.rest.RestClient
+import de.koalaworks.wccs.wordpresscrawler.wordpress.Resource
 import org.slf4j.LoggerFactory
 
 class RequestExecutor(

@@ -1,13 +1,13 @@
-package de.koalaworks.wcts.wordpresscrawler
+package de.koalaworks.wccs.wordpresscrawler
 
 import com.mashape.unirest.http.HttpResponse
 import com.mashape.unirest.http.JsonNode
-import de.koalaworks.wcts.wordpresscrawler.classification.RequestExecutor
-import de.koalaworks.wcts.wordpresscrawler.job.Job
-import de.koalaworks.wcts.wordpresscrawler.rest.RestClient
-import de.koalaworks.wcts.wordpresscrawler.wordpress.ErrorHandlingRequestExecutor
-import de.koalaworks.wcts.wordpresscrawler.wordpress.RequestResult
-import de.koalaworks.wcts.wordpresscrawler.wordpress.SimpleRequestExecutor
+import de.koalaworks.wccs.wordpresscrawler.classification.RequestExecutor
+import de.koalaworks.wccs.wordpresscrawler.job.Job
+import de.koalaworks.wccs.wordpresscrawler.rest.RestClient
+import de.koalaworks.wccs.wordpresscrawler.wordpress.ErrorHandlingRequestExecutor
+import de.koalaworks.wccs.wordpresscrawler.wordpress.RequestResult
+import de.koalaworks.wccs.wordpresscrawler.wordpress.SimpleRequestExecutor
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService

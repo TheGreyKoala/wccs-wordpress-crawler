@@ -1,4 +1,4 @@
-package de.koalaworks.wcts.wordpresscrawler.rest
+package de.koalaworks.wccs.wordpresscrawler.rest
 
 import com.mashape.unirest.http.Unirest
 

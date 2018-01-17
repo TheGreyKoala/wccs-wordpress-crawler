@@ -1,4 +1,4 @@
-package de.koalaworks.wcts.wordpresscrawler.job
+package de.koalaworks.wccs.wordpresscrawler.job
 
 class Crawler(val resultPageSize: Int = 8, val maxConcurrentRequests: Int = 5) {
     override fun equals(other: Any?): Boolean {

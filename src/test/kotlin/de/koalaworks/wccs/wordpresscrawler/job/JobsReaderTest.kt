@@ -1,4 +1,4 @@
-package de.koalaworks.wcts.wordpresscrawler.job
+package de.koalaworks.wccs.wordpresscrawler.job
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName

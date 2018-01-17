@@ -1,6 +1,6 @@
-package de.koalaworks.wcts.wordpresscrawler.wordpress
+package de.koalaworks.wccs.wordpresscrawler.wordpress
 
-import de.koalaworks.wcts.wordpresscrawler.job.Site
+import de.koalaworks.wccs.wordpresscrawler.job.Site
 
 class RequestResult(
         val success: Boolean,

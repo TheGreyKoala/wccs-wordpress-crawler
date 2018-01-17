@@ -1,4 +1,4 @@
-package de.koalaworks.wcts.wordpresscrawler.wordpress
+package de.koalaworks.wccs.wordpresscrawler.wordpress
 
 interface RequestExecutor {
     fun getPages(resultPage: Int, resultPageSize: Int): RequestResult

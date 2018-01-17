@@ -1,4 +1,4 @@
-package de.koalaworks.wcts.wordpresscrawler.job
+package de.koalaworks.wccs.wordpresscrawler.job
 
 class Site(val id: String = "", val name: String = "", val url: String = "") {
     override fun equals(other: Any?): Boolean {

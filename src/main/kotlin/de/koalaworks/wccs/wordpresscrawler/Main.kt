@@ -1,7 +1,7 @@
-package de.koalaworks.wcts.wordpresscrawler
+package de.koalaworks.wccs.wordpresscrawler
 
-import de.koalaworks.wcts.wordpresscrawler.job.JobReader
-import de.koalaworks.wcts.wordpresscrawler.rest.RestClient
+import de.koalaworks.wccs.wordpresscrawler.job.JobReader
+import de.koalaworks.wccs.wordpresscrawler.rest.RestClient
 import org.slf4j.LoggerFactory
 import java.nio.file.Paths
 import java.util.concurrent.Executors

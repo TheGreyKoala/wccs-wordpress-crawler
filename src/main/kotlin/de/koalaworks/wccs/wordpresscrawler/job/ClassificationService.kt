@@ -1,4 +1,4 @@
-package de.koalaworks.wcts.wordpresscrawler.job
+package de.koalaworks.wccs.wordpresscrawler.job
 
 data class ClassificationService(
         val scheme: String = "http",
