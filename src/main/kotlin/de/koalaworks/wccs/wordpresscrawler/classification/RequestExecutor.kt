@@ -16,7 +16,7 @@ class RequestExecutor(
         private val classificationService: ClassificationService,
         private val restClient: RestClient) {
 
-    val logger = LoggerFactory.getLogger(RequestExecutor::class.java)
+    private val logger = LoggerFactory.getLogger(RequestExecutor::class.java)
 
     fun classify(site: Site, resources: Collection<Resource>): Future<HttpResponse<JsonNode>> {
         val resourceLinks = resources.map(Resource::link)
@@ -24,6 +24,8 @@ class RequestExecutor(
         val gson = Gson()
         val job = Job(listOf(task))
         val jobJson = gson.toJson(job)
+
+        logger.info("Starting classification of {} resources.", resources.size)
 
         return restClient
             .post(classificationService.fullUrl)
