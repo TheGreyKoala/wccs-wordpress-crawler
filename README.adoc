@@ -1,1 +1,4 @@
-= Wordpress Crawler
+= WCCS Wordpress Crawler
+
+This tool finds all pages of a Wordpress site and triggers their content classification using the Web Content Classification System.
+See my https://github.com/TheGreyKoala/masters-thesis[master's thesis] for more information about this system and the role of the Wordpress Crawler.
